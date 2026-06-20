@@ -13,7 +13,7 @@
   function buildPool() {
     var pool = [];
     window.CONCEPTS.forEach(function (c) {
-      (c.quiz || []).forEach(function (q) {
+      Content.quiz(c.id).forEach(function (q) {
         pool.push({ conceptId: c.id, concept: c.title, prompt: q.q, choices: q.choices, answer: q.answer, explain: q.explain });
       });
       (c.scenarios || []).forEach(function (s) {

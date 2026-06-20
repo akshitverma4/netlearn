@@ -91,10 +91,14 @@
     ]));
 
     view.appendChild(el("h3", { class: "section-title", text: "Learn & test" }));
+    var cc = Content.customCounts(c.id);
+    var nCards = Content.flashcards(c.id).length;
+    var nQuiz = Content.quiz(c.id).length;
+    var best = Store.get().byConcept[c.id] ? Store.get().byConcept[c.id].quizBest : 0;
     var tabs = [
-      { id: "flashcards", icon: "🃏", label: "Flash Cards", sub: c.flashcards.length + " cards" },
+      { id: "flashcards", icon: "🃏", label: "Flash Cards", sub: nCards + " cards" + (cc.cards ? " (" + cc.cards + " yours)" : "") },
       { id: "diagram", icon: "🗺️", label: "Diagram", sub: "Visual + takeaways" },
-      { id: "quiz", icon: "❓", label: "Quiz", sub: c.quiz.length + " questions · best " + (Store.get().byConcept[c.id] ? Store.get().byConcept[c.id].quizBest : 0) + "%" },
+      { id: "quiz", icon: "❓", label: "Quiz", sub: nQuiz + " questions · best " + best + "%" + (cc.quiz ? " · " + cc.quiz + " yours" : "") },
       { id: "scenarios", icon: "🧩", label: "Scenarios", sub: c.scenarios.length + " situations" },
       { id: "game", icon: "🎮", label: "Game", sub: c.games ? "Play" : "—" }
     ];

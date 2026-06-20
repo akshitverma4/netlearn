@@ -59,9 +59,11 @@
     var c = state.byConcept[id];
     if (!c) return 0;
     var data = (window.CONCEPTS || []).filter(function (x) { return x.id === id; })[0];
+    // mastery is anchored to built-in cards so the target doesn't move when
+    // the learner adds their own cards. Built-in keys are "b" + index.
     var cardCount = data && data.flashcards ? data.flashcards.length : 0;
     var seen = 0;
-    for (var i = 0; i < cardCount; i++) { if (state.seenCards[id + ":" + i]) seen++; }
+    for (var i = 0; i < cardCount; i++) { if (state.seenCards[id + ":b" + i]) seen++; }
     var cardPct = cardCount ? (seen / cardCount) * 100 : 0;
     var hasGame = data && data.games ? 1 : 0;
     var gamePct = hasGame ? Math.min(c.gamesPlayed, 1) * 100 : 100; // 100 if no game to play
@@ -88,8 +90,9 @@
   }
 
   // Flashcard recall: award XP only the first time a card is marked "got it".
-  function markCard(conceptId, index, gotIt) {
-    var k = conceptId + ":" + index;
+  // cardKey is a stable key ("b<index>" for built-in, "c<id>" for custom).
+  function markCard(conceptId, cardKey, gotIt) {
+    var k = conceptId + ":" + cardKey;
     if (gotIt) {
       delete state.review[k];
       if (!state.seenCards[k]) { state.seenCards[k] = true; addXp(conceptId, 5); return; }
@@ -99,7 +102,7 @@
     persist();
   }
 
-  function isReview(conceptId, index) { return !!state.review[conceptId + ":" + index]; }
+  function isReview(conceptId, cardKey) { return !!state.review[conceptId + ":" + cardKey]; }
 
   // Record a quiz/scenario result; award XP scaled to score, bonus for new best.
   function recordQuiz(conceptId, pct) {
