@@ -38,6 +38,7 @@ js/
   data/
     concepts.js         window.CONCEPTS — base content model (10 CCTV concepts)
     more-questions.js   expansion pack; merged into CONCEPTS at load
+    expand/*.js         per-CCTV-topic extra Q&A; each .concat()s onto a concept
     ccna/*.js           CCNA 200-301 topics; each pushes onto window.CONCEPTS
     content.js          window.Content — merges base + user-custom items
   store.js              window.Store — XP/level/mastery/streak/badges (localStorage)
@@ -96,6 +97,11 @@ scenarios[{situation,choices[],answer,explain}], games{match[],sort{},sequence{}
   flashcards + 40 quiz + 3 scenarios + match game. Totals: 19 topics, 489
   flashcards, 463 quiz Qs. Added `track` field + home grouping; tabs & mastery
   now adapt to diagram-less topics.
+- v1.3 — Expanded all 10 CCTV topics to ~40 flashcards + 40 quiz each
+  (`js/data/expand/`), CCNA exam-style, web-researched. Every one of the 19
+  topics is now ~40/40. Totals: 763 flashcards, 760 quiz questions.
+  To add content for a CCTV topic, append in its `expand/<id>.js`; for a CCNA
+  topic, edit its `ccna/<id>.js`; new files must be wired into `index.html`.
 
 ## Ideas / backlog
 - Custom scenario authoring (currently only cards + quiz are user-editable).
