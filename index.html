@@ -2,9 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NetLearn — Networking for CCTV Support</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>NetLearn — Networking & CCNA Study</title>
   <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- PWA: installable, offline-capable -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#0c1018" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32.png" />
+  <!-- iOS add-to-home-screen -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="NetLearn" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-180.png" />
 </head>
 <body>
   <header class="topbar">
@@ -61,5 +71,14 @@
   <script src="js/features/games.js"></script>
   <script src="js/features/test.js"></script>
   <script src="js/app.js"></script>
+
+  <!-- register the service worker for offline use (relative path → subpath-safe) -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("service-worker.js").catch(function () {});
+      });
+    }
+  </script>
 </body>
 </html>

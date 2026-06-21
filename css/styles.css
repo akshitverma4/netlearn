@@ -33,7 +33,12 @@ h1, h2, h3, h4 { line-height: 1.2; margin: 0 0 .4em; }
 .topbar {
   position: sticky; top: 0; z-index: 30;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 20px; background: rgba(10,14,22,.85); backdrop-filter: blur(8px);
+  padding: 12px 20px;
+  /* iOS notch / standalone: keep content clear of the status bar & sides */
+  padding-top: calc(12px + env(safe-area-inset-top));
+  padding-left: calc(20px + env(safe-area-inset-left));
+  padding-right: calc(20px + env(safe-area-inset-right));
+  background: rgba(10,14,22,.85); backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--line);
 }
 .brand { font-weight: 800; font-size: 1.15rem; color: var(--text); letter-spacing: .3px; }

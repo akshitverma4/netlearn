@@ -11,6 +11,12 @@ content are stored in the browser via `localStorage`.
 
 ## How to run / verify
 - Run: open `index.html` in any browser (double-click, or `open index.html`).
+- PWA/offline: the service worker only registers over **http(s) or localhost**, NOT
+  `file://`. To test the PWA locally: `python3 -m http.server` in this dir, open
+  `http://localhost:8000`. On GitHub Pages (HTTPS) it installs + works offline.
+- Deployed via **GitHub Pages** (served at a subpath `user.github.io/repo/`), which
+  is why every path in `index.html`, `manifest.webmanifest`, and `service-worker.js`
+  is RELATIVE. Never switch to absolute (`/...`) paths — they break under the subpath.
 - Syntax check all JS: `for f in js/data/*.js js/*.js js/features/*.js; do node --check "$f"; done`
 - Logic check (no browser): shim `window` + `localStorage` in `node -e`, then
   `require` the data/store files (see git history of validation commands).
@@ -102,6 +108,11 @@ scenarios[{situation,choices[],answer,explain}], games{match[],sort{},sequence{}
   topics is now ~40/40. Totals: 763 flashcards, 760 quiz questions.
   To add content for a CCTV topic, append in its `expand/<id>.js`; for a CCNA
   topic, edit its `ccna/<id>.js`; new files must be wired into `index.html`.
+- v1.4 — PWA: `manifest.webmanifest`, offline `service-worker.js` (precaches all
+  48 assets, cache-first), app icons in `assets/icons/`, iOS add-to-home-screen
+  meta tags, and notch-safe-area padding. Installable + works offline on mobile.
+  NOTE: when adding/removing asset files, update the `ASSETS` list AND bump the
+  `CACHE` version in `service-worker.js` so clients pull the new content.
 
 ## Ideas / backlog
 - Custom scenario authoring (currently only cards + quiz are user-editable).
