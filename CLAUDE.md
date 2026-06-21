@@ -36,8 +36,9 @@ assets/diagrams/        rendered concept PNGs (content source)
 source-diagrams/        original Python scripts the PNGs came from
 js/
   data/
-    concepts.js         window.CONCEPTS — base content model (10 concepts)
+    concepts.js         window.CONCEPTS — base content model (10 CCTV concepts)
     more-questions.js   expansion pack; merged into CONCEPTS at load
+    ccna/*.js           CCNA 200-301 topics; each pushes onto window.CONCEPTS
     content.js          window.Content — merges base + user-custom items
   store.js              window.Store — XP/level/mastery/streak/badges (localStorage)
   components.js         window.NL — DOM/UI helpers (el, ring, toast, tabs…)
@@ -51,10 +52,14 @@ js/
   app.js                home dashboard, concept landing, badges, route wiring
 ```
 
-### Content model (per concept in `concepts.js`)
-`id, title, icon, blurb, diagram{img,takeaways[],hotspots[]}, keyFacts[],
+### Content model (per concept)
+`id, title, icon, blurb, track, diagram{img,takeaways[],hotspots[]}, keyFacts[],
 flashcards[{front,back}], quiz[{q,choices[],answer,explain}],
 scenarios[{situation,choices[],answer,explain}], games{match[],sort{},sequence{}}`
+- `track`: "CCTV" (default if absent) or "CCNA" — home page groups by track.
+- `diagram`, `scenarios`, `games` are OPTIONAL. CCNA topics have no diagram.
+  Tabs (`NL.availableTabs`) and mastery weighting adapt to what exists, so a
+  topic with only flashcards+quiz can still reach 100% mastery.
 
 - `more-questions.js` appends extra `flashcards`/`quiz` onto the base arrays.
 - `content.js` is the **read path** the features use: `Content.flashcards(id)`
@@ -85,6 +90,12 @@ scenarios[{situation,choices[],answer,explain}], games{match[],sort{},sequence{}
   Added custom content (`content.js`): add/delete your own flashcards & quiz
   questions; custom quiz questions also feed the Knowledge Test. Added
   `CLAUDE.md`.
+- v1.2 — Added 9 CCNA 200-301 exam topics (`js/data/ccna/`), web-researched,
+  CCNA exam-format: OSI/TCP-IP, IPv4 subnetting, IPv6, switching/VLAN/STP,
+  routing/OSPF, IP services, security/ACLs, wireless, automation. Each = 40
+  flashcards + 40 quiz + 3 scenarios + match game. Totals: 19 topics, 489
+  flashcards, 463 quiz Qs. Added `track` field + home grouping; tabs & mastery
+  now adapt to diagram-less topics.
 
 ## Ideas / backlog
 - Custom scenario authoring (currently only cards + quiz are user-editable).

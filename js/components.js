@@ -83,16 +83,20 @@
     return (window.CONCEPTS || []).filter(function (c) { return c.id === id; })[0];
   }
 
-  // Build the tab bar for a concept page.
+  // Which tabs a concept actually has content for.
+  function availableTabs(c) {
+    var tabs = [{ id: "flashcards", label: "Flash Cards" }];
+    if (c.diagram) tabs.push({ id: "diagram", label: "Diagram" });
+    if (c.quiz && c.quiz.length) tabs.push({ id: "quiz", label: "Quiz" });
+    if (c.scenarios && c.scenarios.length) tabs.push({ id: "scenarios", label: "Scenarios" });
+    if (c.games) tabs.push({ id: "game", label: "Game" });
+    return tabs;
+  }
+
+  // Build the tab bar for a concept page (only tabs with content).
   function tabBar(conceptId, active) {
-    var tabs = [
-      { id: "flashcards", label: "Flash Cards" },
-      { id: "diagram", label: "Diagram" },
-      { id: "quiz", label: "Quiz" },
-      { id: "scenarios", label: "Scenarios" },
-      { id: "game", label: "Game" }
-    ];
-    return el("div", { class: "tabs" }, tabs.map(function (t) {
+    var c = conceptById(conceptId) || {};
+    return el("div", { class: "tabs" }, availableTabs(c).map(function (t) {
       return el("a", {
         class: "tab" + (t.id === active ? " active" : ""),
         href: "#/concept/" + conceptId + "/" + t.id,
@@ -113,6 +117,6 @@
   window.NL = {
     el: el, clear: clear, shuffle: shuffle, toast: toast, xpToast: xpToast,
     progressBar: progressBar, ring: ring, conceptById: conceptById,
-    tabBar: tabBar, pageHeader: pageHeader
+    tabBar: tabBar, availableTabs: availableTabs, pageHeader: pageHeader
   };
 })();

@@ -47,21 +47,29 @@
       modeCard("🏅", "Badges & Progress", "See what you've earned", "#/badges")
     ]));
 
-    // concept grid with mastery rings
-    view.appendChild(el("h2", { class: "section-title", text: "Concepts" }));
-    var grid = el("div", { class: "card-grid" });
+    // concept grid with mastery rings, grouped by track (CCTV / CCNA)
+    var tracks = {};
     window.CONCEPTS.forEach(function (c) {
-      var m = Store.mastery(c.id);
-      grid.appendChild(el("a", { class: "concept-card", href: "#/concept/" + c.id }, [
-        el("div", { class: "cc-top" }, [
-          el("span", { class: "cc-icon", text: c.icon }),
-          NL.ring(m)
-        ]),
-        el("strong", { class: "cc-title", text: c.title }),
-        el("span", { class: "muted cc-blurb", text: c.blurb })
-      ]));
+      var t = c.track || "CCTV";
+      (tracks[t] = tracks[t] || []).push(c);
     });
-    view.appendChild(grid);
+    var titles = { "CCTV": "CCTV / Avigilon Concepts", "CCNA": "CCNA 200-301 Exam Topics" };
+    Object.keys(tracks).forEach(function (t) {
+      view.appendChild(el("h2", { class: "section-title", text: titles[t] || t }));
+      var grid = el("div", { class: "card-grid" });
+      tracks[t].forEach(function (c) {
+        var m = Store.mastery(c.id);
+        grid.appendChild(el("a", { class: "concept-card", href: "#/concept/" + c.id }, [
+          el("div", { class: "cc-top" }, [
+            el("span", { class: "cc-icon", text: c.icon }),
+            NL.ring(m)
+          ]),
+          el("strong", { class: "cc-title", text: c.title }),
+          el("span", { class: "muted cc-blurb", text: c.blurb })
+        ]));
+      });
+      view.appendChild(grid);
+    });
   }
 
   function modeCard(icon, title, sub, href) {
@@ -95,13 +103,14 @@
     var nCards = Content.flashcards(c.id).length;
     var nQuiz = Content.quiz(c.id).length;
     var best = Store.get().byConcept[c.id] ? Store.get().byConcept[c.id].quizBest : 0;
-    var tabs = [
-      { id: "flashcards", icon: "🃏", label: "Flash Cards", sub: nCards + " cards" + (cc.cards ? " (" + cc.cards + " yours)" : "") },
-      { id: "diagram", icon: "🗺️", label: "Diagram", sub: "Visual + takeaways" },
-      { id: "quiz", icon: "❓", label: "Quiz", sub: nQuiz + " questions · best " + best + "%" + (cc.quiz ? " · " + cc.quiz + " yours" : "") },
-      { id: "scenarios", icon: "🧩", label: "Scenarios", sub: c.scenarios.length + " situations" },
-      { id: "game", icon: "🎮", label: "Game", sub: c.games ? "Play" : "—" }
-    ];
+    var allTabs = {
+      flashcards: { id: "flashcards", icon: "🃏", label: "Flash Cards", sub: nCards + " cards" + (cc.cards ? " (" + cc.cards + " yours)" : "") },
+      diagram: { id: "diagram", icon: "🗺️", label: "Diagram", sub: "Visual + takeaways" },
+      quiz: { id: "quiz", icon: "❓", label: "Quiz", sub: nQuiz + " questions · best " + best + "%" + (cc.quiz ? " · " + cc.quiz + " yours" : "") },
+      scenarios: { id: "scenarios", icon: "🧩", label: "Scenarios", sub: (c.scenarios ? c.scenarios.length : 0) + " situations" },
+      game: { id: "game", icon: "🎮", label: "Game", sub: "Play" }
+    };
+    var tabs = NL.availableTabs(c).map(function (t) { return allTabs[t.id]; });
     var grid = el("div", { class: "card-grid" });
     tabs.forEach(function (t) {
       grid.appendChild(el("a", { class: "mini-card", href: "#/concept/" + c.id + "/" + t.id }, [

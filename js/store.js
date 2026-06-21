@@ -61,14 +61,18 @@
     var data = (window.CONCEPTS || []).filter(function (x) { return x.id === id; })[0];
     // mastery is anchored to built-in cards so the target doesn't move when
     // the learner adds their own cards. Built-in keys are "b" + index.
+    // Only components that exist for this concept are weighted (so a topic
+    // with no scenarios/game can still reach 100%).
     var cardCount = data && data.flashcards ? data.flashcards.length : 0;
     var seen = 0;
     for (var i = 0; i < cardCount; i++) { if (state.seenCards[id + ":b" + i]) seen++; }
     var cardPct = cardCount ? (seen / cardCount) * 100 : 0;
-    var hasGame = data && data.games ? 1 : 0;
-    var gamePct = hasGame ? Math.min(c.gamesPlayed, 1) * 100 : 100; // 100 if no game to play
-    // weighting: quiz 35%, scenario 25%, cards 25%, game 15%
-    var score = c.quizBest * 0.35 + c.scenarioBest * 0.25 + cardPct * 0.25 + gamePct * 0.15;
+
+    var parts = [{ v: cardPct, w: 0.25 }, { v: c.quizBest, w: 0.35 }];
+    if (data && data.scenarios && data.scenarios.length) parts.push({ v: c.scenarioBest, w: 0.25 });
+    if (data && data.games) parts.push({ v: Math.min(c.gamesPlayed, 1) * 100, w: 0.15 });
+    var totW = parts.reduce(function (a, p) { return a + p.w; }, 0);
+    var score = parts.reduce(function (a, p) { return a + p.v * p.w; }, 0) / totW;
     return Math.round(Math.min(100, score));
   }
 
