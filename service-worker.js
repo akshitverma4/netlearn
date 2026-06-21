@@ -5,7 +5,7 @@
  *
  * Bump CACHE when content changes so clients fetch the new version.
  */
-var CACHE = "netlearn-v1.3";
+var CACHE = "netlearn-v1.5";
 
 var ASSETS = [
   "./",
@@ -42,6 +42,8 @@ var ASSETS = [
   "js/features/quiz.js",
   "js/features/games.js",
   "js/features/test.js",
+  "js/features/exam.js",
+  "js/features/sync.js",
   "js/app.js",
   "assets/diagrams/CCTV_System_Architecture.png",
   "assets/diagrams/DHCP_DNS_Explained.png",

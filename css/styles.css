@@ -259,6 +259,36 @@ select.input { cursor: pointer; }
 .manage-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); }
 .manage-q { flex: 1; }
 
+/* ---------- exam simulator ---------- */
+.exam-meta { display: flex; flex-wrap: wrap; gap: 22px; justify-content: space-around; margin-bottom: 8px; }
+.flag-btn { background: var(--panel-2); border: 1px solid var(--line); color: var(--muted); border-radius: 8px; padding: 5px 12px; font-weight: 700; cursor: pointer; font-size: .85rem; }
+.flag-btn.on { color: var(--warn); border-color: var(--warn); }
+.exam-grid-wrap { max-width: 720px; margin: 18px auto 0; }
+.exam-grid-label { margin-bottom: 6px; font-size: .85rem; }
+.exam-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 6px; margin-bottom: 12px; }
+.exam-cell { aspect-ratio: 1; border: 1px solid var(--line); background: var(--panel); color: var(--muted); border-radius: 8px; font-weight: 700; font-size: .82rem; cursor: pointer; }
+.exam-cell.done { background: rgba(79,140,255,.22); color: var(--text); border-color: var(--brand-2); }
+.exam-cell.flagged { background: rgba(240,180,41,.2); color: var(--warn); border-color: var(--warn); }
+.exam-cell.current { outline: 2px solid var(--brand); color: var(--text); }
+.done-card.pass { border-color: var(--good); box-shadow: 0 0 0 1px rgba(63,208,127,.3); }
+.done-card.fail { border-color: var(--bad); }
+.verdict { font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; margin-bottom: 4px; }
+.done-card.pass .verdict { color: var(--good); }
+.done-card.fail .verdict { color: var(--bad); }
+.review-list { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+.review-list.collapsed { display: none; }
+.review-item { border-left: 3px solid var(--line); padding: 8px 12px; background: var(--bg-2); border-radius: 8px; }
+.review-item.ok { border-left-color: var(--good); }
+.review-item.no { border-left-color: var(--bad); }
+.review-q { font-weight: 600; margin-bottom: 6px; }
+.review-line { font-size: .9rem; margin: 3px 0; }
+.review-line.good-text { color: var(--good); }
+
+/* ---------- sync ---------- */
+.input.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .8rem; word-break: break-all; }
+.sync-modes { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+.sync-mode { display: flex; align-items: flex-start; gap: 8px; cursor: pointer; }
+
 /* ---------- responsive ---------- */
 @media (max-width: 720px) {
   .two-col, .mode-row { grid-template-columns: 1fr; }

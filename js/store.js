@@ -16,7 +16,8 @@
     seenCards: {},        // "conceptId:cardIndex" -> true  (awarded recall XP already)
     badges: {},           // badgeId -> true
     streak: { count: 0, lastDay: null },
-    bestTest: 0           // best knowledge-test percentage
+    bestTest: 0,          // best knowledge-test percentage
+    bestExam: 0           // best CCNA exam-simulator percentage
   };
 
   var listeners = [];
@@ -133,6 +134,12 @@
     addXp(null, Math.round(pct / 5)); // up to 20 XP
   }
 
+  // CCNA exam simulator result.
+  function recordExam(pct) {
+    if (pct > state.bestExam) state.bestExam = pct;
+    addXp(null, Math.round(pct / 4)); // up to 25 XP — the big one
+  }
+
   /* ---- streak (UTC-day granularity) ---- */
   function todayKey() {
     var d = new Date();
@@ -159,6 +166,7 @@
     { id: "level-5", name: "Level 5", icon: "⭐", test: function () { return level() >= 5; } },
     { id: "streak-3", name: "3-Day Streak", icon: "🔥", test: function () { return state.streak.count >= 3; } },
     { id: "exam-ace", name: "Exam Ace", icon: "🎓", test: function () { return state.bestTest >= 80; } },
+    { id: "ccna-ready", name: "CCNA Ready", icon: "📜", test: function () { return state.bestExam >= 82; } },
     { id: "all-rounder", name: "All-Rounder", icon: "🏆", test: function () { return overallMastery() >= 80; } }
   ];
 
@@ -176,6 +184,48 @@
     persist();
   }
 
+  /* ---- sync: export / import (merge or replace) ---- */
+  function exportState() { return clone(state); }
+
+  // Merge two progress objects without inflating: union of sets, max of bests.
+  function mergeInto(target, src) {
+    if (!src || typeof src !== "object") return target;
+    target.xp = Math.max(target.xp || 0, src.xp || 0);
+    target.bestTest = Math.max(target.bestTest || 0, src.bestTest || 0);
+    target.bestExam = Math.max(target.bestExam || 0, src.bestExam || 0);
+    ["review", "seenCards", "badges"].forEach(function (k) {
+      var s = src[k] || {};
+      Object.keys(s).forEach(function (key) { if (s[key]) target[k][key] = true; });
+    });
+    var sc = src.byConcept || {};
+    Object.keys(sc).forEach(function (id) {
+      var t = target.byConcept[id] || (target.byConcept[id] = { xp: 0, quizBest: 0, scenarioBest: 0, gamesPlayed: 0, mastered: {} });
+      var o = sc[id];
+      t.xp = Math.max(t.xp || 0, o.xp || 0);
+      t.quizBest = Math.max(t.quizBest || 0, o.quizBest || 0);
+      t.scenarioBest = Math.max(t.scenarioBest || 0, o.scenarioBest || 0);
+      t.gamesPlayed = Math.max(t.gamesPlayed || 0, o.gamesPlayed || 0);
+      var m = o.mastered || {};
+      Object.keys(m).forEach(function (key) { if (m[key]) t.mastered[key] = true; });
+    });
+    // keep the streak with the higher count
+    if (src.streak && (src.streak.count || 0) > (target.streak.count || 0)) target.streak = clone(src.streak);
+    return target;
+  }
+
+  // mode: "merge" (default) combines; "replace" overwrites local.
+  function importState(data, mode) {
+    if (!data || typeof data !== "object") return false;
+    if (mode === "replace") {
+      state = Object.assign(clone(DEFAULT), data);
+    } else {
+      state = mergeInto(clone(state), data);
+    }
+    checkBadges();
+    persist();
+    return true;
+  }
+
   window.Store = {
     XP_PER_LEVEL: XP_PER_LEVEL,
     get: function () { return state; },
@@ -190,6 +240,7 @@
     badges: BADGES,
     earnedBadges: function () { return BADGES.filter(function (b) { return state.badges[b.id]; }); },
     bestTest: function () { return state.bestTest; },
+    bestExam: function () { return state.bestExam; },
     addXp: addXp,
     markCard: markCard,
     isReview: isReview,
@@ -197,6 +248,9 @@
     recordScenario: recordScenario,
     recordGame: recordGame,
     recordTest: recordTest,
+    recordExam: recordExam,
+    exportState: exportState,
+    importState: importState,
     reset: reset
   };
 })();

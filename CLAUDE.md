@@ -55,7 +55,9 @@ js/
     diagrams.js         Features.diagram
     quiz.js             Features.quiz + Features.scenarios (shared engine)
     games.js            Features.game (concept tab) + Features.gamesHub
-    test.js             Features.test (timed cross-concept exam)
+    test.js             Features.test (timed cross-concept knowledge test)
+    exam.js             Features.exam (CCNA 200-301 mock exam, ~100 Q, timed, pass mark)
+    sync.js             Features.sync (export/import progress+custom via code/file)
   app.js                home dashboard, concept landing, badges, route wiring
 ```
 
@@ -113,6 +115,14 @@ scenarios[{situation,choices[],answer,explain}], games{match[],sort{},sequence{}
   meta tags, and notch-safe-area padding. Installable + works offline on mobile.
   NOTE: when adding/removing asset files, update the `ASSETS` list AND bump the
   `CACHE` version in `service-worker.js` so clients pull the new content.
+- v1.5 — CCNA Exam Simulator (`features/exam.js`, route `#/exam`): ~100 timed
+  questions from the CCNA track (pool ~387), question jump-grid + flag, 82% pass
+  mark, per-topic breakdown + full answer review. New `bestExam` stat + "CCNA
+  Ready" badge (≥82%). Sync & Backup (`features/sync.js`, route `#/sync`):
+  export/import progress + custom content as a base64 code or .json file, with
+  Merge (max-of-both, dedups custom) or Replace. Store gained `exportState`/
+  `importState`/`recordExam`; Content gained `exportCustom`/`importCustom`.
+  Sync is manual (no backend) by design — fits the static/offline architecture.
 
 ## Ideas / backlog
 - Custom scenario authoring (currently only cards + quiz are user-editable).

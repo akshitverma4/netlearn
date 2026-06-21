@@ -42,9 +42,11 @@
 
     // mode shortcuts
     view.appendChild(el("div", { class: "mode-row" }, [
+      modeCard("🎓", "CCNA Exam Simulator", "100-question timed mock exam", "#/exam"),
       modeCard("📝", "Knowledge Test", "Timed cross-concept exam", "#/test"),
       modeCard("🎮", "Games Hub", "All games in one place", "#/games"),
-      modeCard("🏅", "Badges & Progress", "See what you've earned", "#/badges")
+      modeCard("🏅", "Badges & Progress", "See what you've earned", "#/badges"),
+      modeCard("🔄", "Sync & Backup", "Move progress between devices", "#/sync")
     ]));
 
     // concept grid with mastery rings, grouped by track (CCTV / CCNA)
@@ -131,7 +133,8 @@
       stat("Total XP", Store.xp()),
       stat("Overall mastery", Store.overallMastery() + "%"),
       stat("Day streak", Store.streak()),
-      stat("Best test", Store.bestTest() + "%")
+      stat("Best test", Store.bestTest() + "%"),
+      stat("CCNA exam", Store.bestExam() + "%")
     ]));
 
     var grid = el("div", { class: "badge-grid" });
@@ -186,7 +189,9 @@
   Router.add("/concept/:id", conceptLanding);
   Router.add("/concept/:id/:tab", tabHandler);
   Router.add("/test", function () { NL.clear(view); window.Features.test(view); });
+  Router.add("/exam", function () { NL.clear(view); window.Features.exam(view); });
   Router.add("/games", function () { NL.clear(view); window.Features.gamesHub(view); });
+  Router.add("/sync", function () { NL.clear(view); window.Features.sync(view); });
   Router.add("/badges", badges);
   Router.setNotFound(notFound);
 

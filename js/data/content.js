@@ -97,9 +97,48 @@
     };
   }
 
+  /* ---- sync: export / import custom content ---- */
+  function exportCustom() {
+    return { cards: JSON.parse(JSON.stringify(custom.cards)), quiz: JSON.parse(JSON.stringify(custom.quiz)) };
+  }
+
+  function totalCustom() {
+    var n = 0;
+    Object.keys(custom.cards).forEach(function (k) { n += custom.cards[k].length; });
+    Object.keys(custom.quiz).forEach(function (k) { n += custom.quiz[k].length; });
+    return n;
+  }
+
+  // mode: "replace" overwrites; "merge" adds only items not already present
+  // (dedup by content so repeated syncs don't pile up duplicates).
+  function importCustom(data, mode) {
+    if (!data || typeof data !== "object") return false;
+    if (mode === "replace") { custom.cards = {}; custom.quiz = {}; }
+    var inCards = data.cards || {}, inQuiz = data.quiz || {};
+    Object.keys(inCards).forEach(function (cid) {
+      custom.cards[cid] = custom.cards[cid] || [];
+      var have = {};
+      custom.cards[cid].forEach(function (c) { have[c.front + "||" + c.back] = true; });
+      inCards[cid].forEach(function (c) {
+        if (!have[c.front + "||" + c.back]) custom.cards[cid].push({ id: newId(), front: c.front, back: c.back });
+      });
+    });
+    Object.keys(inQuiz).forEach(function (cid) {
+      custom.quiz[cid] = custom.quiz[cid] || [];
+      var have = {};
+      custom.quiz[cid].forEach(function (q) { have[q.q] = true; });
+      inQuiz[cid].forEach(function (q) {
+        if (!have[q.q]) custom.quiz[cid].push({ id: newId(), q: q.q, choices: q.choices, answer: q.answer, explain: q.explain || "" });
+      });
+    });
+    save();
+    return true;
+  }
+
   window.Content = {
     flashcards: flashcards, addCard: addCard, deleteCard: deleteCard,
     quiz: quiz, addQuiz: addQuiz, deleteQuiz: deleteQuiz,
-    customCounts: customCounts
+    customCounts: customCounts,
+    exportCustom: exportCustom, importCustom: importCustom, totalCustom: totalCustom
   };
 })();
