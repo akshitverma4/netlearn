@@ -124,6 +124,15 @@ scenarios[{situation,choices[],answer,explain}], games{match[],sort{},sequence{}
   `importState`/`recordExam`; Content gained `exportCustom`/`importCustom`.
   Sync is manual (no backend) by design — fits the static/offline architecture.
 
+- v1.6 — CCNA expansion packs (`js/data/ccna/expand/*.js`): +10 flashcards and
+  +15 quiz per CCNA topic, web-researched from legitimate sources (Cisco 200-301
+  v1.1 blueprint, NetAcad/Cisco Press style, study-ccna.com — NOT braindumps),
+  exam-realistic phrasing. Each file finds its concept by id and `.concat()`s on
+  (same pattern as CCTV `expand/`). Every CCNA topic is now 50 flashcards + 55
+  quiz. Totals: ~853 flashcards, ~895 quiz Qs. New files wired into `index.html`
+  AND `service-worker.js` ASSETS (CACHE bumped to v1.6). The larger CCNA pool
+  also feeds the Knowledge Test and the CCNA Exam Simulator.
+
 ## Ideas / backlog
 - Custom scenario authoring (currently only cards + quiz are user-editable).
 - Export/import progress + custom content as JSON.

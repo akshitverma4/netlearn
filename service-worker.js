@@ -5,7 +5,7 @@
  *
  * Bump CACHE when content changes so clients fetch the new version.
  */
-var CACHE = "netlearn-v1.5";
+var CACHE = "netlearn-v1.6";
 
 var ASSETS = [
   "./",
@@ -33,6 +33,15 @@ var ASSETS = [
   "js/data/ccna/ccna-security.js",
   "js/data/ccna/ccna-wireless.js",
   "js/data/ccna/ccna-automation.js",
+  "js/data/ccna/expand/ccna-osi.js",
+  "js/data/ccna/expand/ccna-ipv4.js",
+  "js/data/ccna/expand/ccna-ipv6.js",
+  "js/data/ccna/expand/ccna-switching.js",
+  "js/data/ccna/expand/ccna-routing.js",
+  "js/data/ccna/expand/ccna-ipservices.js",
+  "js/data/ccna/expand/ccna-security.js",
+  "js/data/ccna/expand/ccna-wireless.js",
+  "js/data/ccna/expand/ccna-automation.js",
   "js/data/content.js",
   "js/store.js",
   "js/components.js",
