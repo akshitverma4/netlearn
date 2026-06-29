@@ -166,6 +166,21 @@ button.mini:disabled { opacity: .3; }
 .quiz-stage { max-width: 720px; margin: 0 auto; }
 .quiz-counter, .game-status { color: var(--muted); font-weight: 600; margin: 10px 0; }
 .quiz-q { font-size: 1.25rem; font-weight: 700; margin: 12px 0 16px; }
+.logbox {
+  background: #0a0e16;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--brand);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 12px 0 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: .82rem;
+  line-height: 1.5;
+  color: #cdd6e6;
+  white-space: pre;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 .choices { display: flex; flex-direction: column; gap: 10px; }
 .choice { text-align: left; background: var(--panel); border: 1px solid var(--line); color: var(--text); padding: 13px 16px; border-radius: 12px; font-size: 1rem; cursor: pointer; transition: border-color .12s, background .12s; }
 .choice:hover:not(:disabled) { border-color: var(--brand-2); }

@@ -5,7 +5,7 @@
  *
  * Bump CACHE when content changes so clients fetch the new version.
  */
-var CACHE = "netlearn-v1.6";
+var CACHE = "netlearn-v1.7";
 
 var ASSETS = [
   "./",
@@ -24,6 +24,7 @@ var ASSETS = [
   "js/data/expand/vlan.js",
   "js/data/expand/vlan-setup.js",
   "js/data/expand/firewall-lab.js",
+  "js/data/cctv-logs.js",
   "js/data/ccna/ccna-osi.js",
   "js/data/ccna/ccna-ipv4.js",
   "js/data/ccna/ccna-ipv6.js",
@@ -92,11 +93,30 @@ self.addEventListener("activate", function (e) {
   );
 });
 
-// Cache-first for same-origin GETs; fall back to network, then cache the result.
 self.addEventListener("fetch", function (e) {
   var req = e.request;
   if (req.method !== "GET") return;
   if (new URL(req.url).origin !== self.location.origin) return;
+
+  // Network-first for page navigations (the app shell). This way a content
+  // update — e.g. a newly added <script> in index.html — shows up on a single
+  // refresh instead of being masked by a stale cached shell. Falls back to the
+  // cached shell when offline.
+  if (req.mode === "navigate") {
+    e.respondWith(
+      fetch(req).then(function (res) {
+        var copy = res.clone();
+        caches.open(CACHE).then(function (c) { c.put("index.html", copy); });
+        return res;
+      }).catch(function () {
+        return caches.match(req).then(function (hit) { return hit || caches.match("index.html"); });
+      })
+    );
+    return;
+  }
+
+  // Cache-first for static assets; fall back to network, then cache the result.
+  // (Bump CACHE when a tracked asset's content changes so clients re-precache.)
   e.respondWith(
     caches.match(req).then(function (hit) {
       if (hit) return hit;
@@ -106,9 +126,6 @@ self.addEventListener("fetch", function (e) {
           caches.open(CACHE).then(function (c) { c.put(req, copy); });
         }
         return res;
-      }).catch(function () {
-        // offline navigation fallback → app shell
-        if (req.mode === "navigate") return caches.match("index.html");
       });
     })
   );

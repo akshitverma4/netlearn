@@ -69,6 +69,10 @@ scenarios[{situation,choices[],answer,explain}], games{match[],sort{},sequence{}
 - `diagram`, `scenarios`, `games` are OPTIONAL. CCNA topics have no diagram.
   Tabs (`NL.availableTabs`) and mastery weighting adapt to what exists, so a
   topic with only flashcards+quiz can still reach 100% mastery.
+- Quiz/scenario items may carry an optional **`log`** string. The shared quiz
+  engine (`quiz.js`) renders it above the question in a monospace
+  `<pre class="logbox">` with preserved newlines (use `\n`). `Content.quiz()`
+  whitelists fields, so it must keep passing `log` through. Used by `cctv-logs`.
 
 - `more-questions.js` appends extra `flashcards`/`quiz` onto the base arrays.
 - `content.js` is the **read path** the features use: `Content.flashcards(id)`
@@ -132,6 +136,18 @@ scenarios[{situation,choices[],answer,explain}], games{match[],sort{},sequence{}
   quiz. Totals: ~853 flashcards, ~895 quiz Qs. New files wired into `index.html`
   AND `service-worker.js` ASSETS (CACHE bumped to v1.6). The larger CCNA pool
   also feeds the Knowledge Test and the CCNA Exam Simulator.
+
+- v1.7 — New CCTV/Avigilon topic **Log Reading & Troubleshooting**
+  (`js/data/cctv-logs.js`, id `cctv-logs`, track CCTV): shows real-looking ACC /
+  switch / RAID / NTP logs and asks the learner to pinpoint the fault. 8 keyFacts,
+  16 flashcards, 20 quiz, 4 scenarios, match + sort games. Introduced the optional
+  `log` field on quiz/scenario items + `.logbox` monospace rendering in `quiz.js`
+  and `Content.quiz()` (see content model note). Wired into `index.html` and
+  `service-worker.js` ASSETS (CACHE bumped to v1.7). Also changed the SW fetch
+  strategy to **network-first for page navigations** (the app shell) so a
+  content update — e.g. a newly added `<script>` in `index.html` — appears on a
+  single refresh instead of being masked by a stale cached shell; static assets
+  stay cache-first (still bump CACHE when an existing asset's bytes change).
 
 ## Ideas / backlog
 - Custom scenario authoring (currently only cards + quiz are user-editable).

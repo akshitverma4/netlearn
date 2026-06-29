@@ -49,6 +49,7 @@
       stage.appendChild(NL.progressBar((pos / list.length) * 100));
       stage.appendChild(el("div", { class: "quiz-counter", text: "Question " + (pos + 1) + " of " + list.length +
         "   ·   Score " + correct + "/" + list.length + (item.custom ? "   ·   (your question)" : "") }));
+      if (item.log) stage.appendChild(el("pre", { class: "logbox", text: item.log }));
       stage.appendChild(el("div", { class: "quiz-q", text: item[promptField] }));
 
       var choiceWrap = el("div", { class: "choices" });

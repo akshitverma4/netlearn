@@ -67,7 +67,7 @@
     var c = base(conceptId);
     if (!c) return [];
     var out = c.quiz.map(function (q) {
-      return { q: q.q, choices: q.choices, answer: q.answer, explain: q.explain, custom: false };
+      return { q: q.q, log: q.log, choices: q.choices, answer: q.answer, explain: q.explain, custom: false };
     });
     (custom.quiz[conceptId] || []).forEach(function (q) {
       out.push({ q: q.q, choices: q.choices, answer: q.answer, explain: q.explain, custom: true, id: q.id });
